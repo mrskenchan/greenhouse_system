@@ -1,8 +1,6 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { plantService, sensorService, alertService, irrigationService } from '../services';
-
-// 1. Exportamos solo el Context
-export const GreenhouseContext = createContext();
+import React, { useState, useEffect } from 'react';
+import { plantService, alertService, irrigationService } from '../services';
+import { GreenhouseContext } from './GHContext';
 
 export const GreenhouseProvider = ({ children }) => {
     const [plants, setPlants] = useState([]);
@@ -12,36 +10,76 @@ export const GreenhouseProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        loadInitialData();
-    }, []);
-
-    const loadInitialData = async () => {
+    const loadInitialData = async () => { 
         try {
             setLoading(true);
-            const [plantsData, readingsData, alertsData, eventsData] = await Promise.all([
+            const [plantsData, alertsData, irrigationData] = await Promise.all([
                 plantService.getAll(),
-                sensorService.getLatestReadings(),
-                alertService.getPending(),
-                irrigationService.getRecent()
+                alertService.getAll(),
+                irrigationService.getAll(),
             ]);
-
             setPlants(plantsData);
-            setReadings(readingsData);
             setAlerts(alertsData);
-            setIrrigationEvents(eventsData);
+            setIrrigationEvents(irrigationData);
+            setError(null);
+            setLoading(false);
         } catch (err) {
             setError(err.message);
-            console.error('Error cargando datos:', err);
         } finally {
             setLoading(false);
         }
     };
 
-    const addPlant = async (plantData) => { /* ... lógica de agregar planta ... */ };
-    const updateReading = (newReading) => { /* ... lógica de actualización ... */ };
-    const resolveAlert = async (alertId) => { /* ... lógica de resolver alerta ... */ };
-    const startIrrigation = async (plantId, type = 'manual') => { /* ... lógica de riego ... */ };
+    // Lógica de carga inicial (ya existente)
+    useEffect(() => {
+        loadInitialData();
+    }, []);
+    
+    
+    // Agregar nueva planta 
+    const addPlant = async (plantData) => {
+        try {
+            const newPlant = await plantService.create(plantData);
+            setPlants(prev => [...prev, newPlant]);
+            return newPlant;
+        } catch (err) {
+            throw new Error(`Error agregando planta: ${err.message}`);
+        }
+    };
+
+    // Actualizar lectura de sensor 
+    const updateReading = (newReading) => {
+        setReadings(prev => {
+            const index = prev.findIndex(r => r.plantId === newReading.plantId);
+            if (index !== -1) {
+                const updated = [...prev];
+                updated[index] = newReading;
+                return updated;
+            }
+            return [...prev, newReading];
+        });
+    };
+
+    // Resolver alerta 
+    const resolveAlert = async (alertId) => {
+        try {
+            await alertService.resolve(alertId);
+            setAlerts(prev => prev.filter(a => a.id !== alertId));
+        } catch (err) {
+            throw new Error(`Error resolviendo alerta: ${err.message}`);
+        }
+    };
+
+    // Iniciar riego 
+    const startIrrigation = async (plantId, type = 'manual') => {
+        try {
+            const event = await irrigationService.start(plantId, type);
+            setIrrigationEvents(prev => [...prev, event]);
+            return event;
+        } catch (err) {
+            throw new Error(`Error iniciando riego: ${err.message}`);
+        }
+    };
 
     const value = {
         plants, readings, alerts, irrigationEvents, loading, error, 

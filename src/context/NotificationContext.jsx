@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useEffect } from 'react';
-import toast from 'react-hot-toast'; // Asumimos que usas React Hot Toast
+import React, { useEffect } from 'react';
+import toast from 'react-hot-toast'; 
 import { useGreenhouse } from '../hooks/useGreenhouse'; 
-
-export const NotificationContext = createContext();
+import { NotificationContext } from './NContext';
 
 export const NotificationProvider = ({ children }) => {
     const { alerts, irrigationEvents } = useGreenhouse();
