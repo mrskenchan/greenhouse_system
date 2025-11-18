@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useGreenhouse } from '../../context/GreenhouseContext';
 import { useSensors } from '../../hooks/useSensors';
 import { useRealTimeData } from '../../hooks/useRealTimeData';

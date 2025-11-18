@@ -1,0 +1,21 @@
+
+.common-card {
+  background: var(--color-bg-card);
+  border-radius: var(--border-radius-md);
+  padding: calc(var(--spacing-unit) * 2); /* 16px */
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.common-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-unit);
+}

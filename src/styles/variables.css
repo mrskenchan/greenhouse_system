@@ -1,0 +1,23 @@
+
+:root {
+  /* Paleta de Colores Invernadero IoT */
+  --color-primary: #2ecc71;      /* Verde principal */
+  --color-secondary: #3498db;    /* Azul agua */
+  --color-success: #27ae60;      /* Estado OK */
+  --color-warning: #f1c40f;      /* Alerta media */
+  --color-danger: #e74c3c;       /* Alerta crítica */
+  
+  /* Fondos y Texto */
+  --color-bg-light: #f4f7f6;     /* Fondo claro de la app */
+  --color-bg-card: #ffffff;      /* Fondo de tarjetas */
+  --color-text-main: #2c3e50;    /* Texto principal (Azul oscuro) */
+  --color-text-light: #95a5a6;   /* Texto secundario */
+  --color-border: rgba(0, 0, 0, 0.08); /* Borde ligero */
+  
+  /* Spacing y Componentes */
+  --spacing-unit: 8px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 12px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+}
