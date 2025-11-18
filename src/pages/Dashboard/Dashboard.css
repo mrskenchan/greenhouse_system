@@ -1,0 +1,54 @@
+/* src/pages/dashboard.css */
+
+/* Contenedor principal del Dashboard */
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header del Dashboard */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  color: var(--primary-dark);
+}
+
+.status-badge {
+  background-color: #e8f5e9; /* Fondo verde claro */
+  color: var(--primary-dark);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* GRID PRINCIPAL: Aquí ocurre la magia de la distribución */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Sección de Sensores (Destacada) */
+.sensors-section {
+  grid-column: 1 / -1; /* Ocupa todo el ancho */
+}
+
+.section-title {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}

@@ -1,0 +1,56 @@
+/* Estilos para las Tarjetas (SensorCard, PlantCard) */
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Encabezado de la tarjeta del sensor */
+.sensor-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sensor-icon {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  background: #e8f5e9;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.sensor-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sensor-unit {
+  font-size: 1rem;
+  color: var(--text-light);
+  margin-left: 5px;
+}
+
+.sensor-label {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 0.5rem;
+}
+
+/* Indicador visual de estado (borde de color según valor) */
+.card.status-normal { border-left: 5px solid var(--primary-color); }
+.card.status-warning { border-left: 5px solid var(--warning-color); }
+.card.status-critical { border-left: 5px solid var(--danger-color); }
