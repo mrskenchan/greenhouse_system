@@ -1,67 +1,57 @@
 import React, { createContext, useContext, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { useGreenhouse } from './GreenhouseContext';
+import toast from 'react-hot-toast'; // Asumimos que usas React Hot Toast
+import { useGreenhouse } from '../hooks/useGreenhouse'; 
 
-const NotificationContext = createContext();
-
-export const useNotifications = () => useContext(NotificationContext);
+export const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
-  const { alerts, irrigationEvents } = useGreenhouse();
+    const { alerts, irrigationEvents } = useGreenhouse();
 
-  // Notificar nuevas alertas
-  useEffect(() => {
-    if (alerts.length > 0) {
-      const latestAlert = alerts[0];
-      showNotification(latestAlert);
-    }
-  }, [alerts.length]);
+    // 1. Declaración de la función: Mover showNotification al inicio.
+    const showNotification = (data, type = 'alert') => {
+        const isAlert = type === 'alert';
+        let message, icon, color;
 
-  // Notificar eventos de riego
-  useEffect(() => {
-    const activeIrrigation = irrigationEvents.find(e => e.status === 'in_progress');
-    if (activeIrrigation) {
-      toast('💧 Riego en progreso', { icon: '🚿' });
-    }
-  }, [irrigationEvents]);
+        if (isAlert) {
+            message = data.message || `Nueva Alerta (${data.type})`;
+            icon = data.getSeverity() === 'danger' ? '🚨' : '⚠️';
+            color = data.getSeverity() === 'danger' ? '#e74c3c' : '#f1c40f';
+        } else { // Riego
+            message = `Riego iniciado para planta ${data.plantId}`;
+            icon = '💧';
+            color = '#3498db';
+        }
 
-  const showNotification = (alert) => {
-    const options = {
-      duration: 4000,
-      style: {
-        background: getAlertColor(alert.severity),
-        color: '#fff',
-      },
+        toast(message, {
+            duration: 4000,
+            icon: icon,
+            style: {
+                background: isAlert ? '#fff3f3' : '#f0f8ff',
+                color: color,
+                fontWeight: 'bold',
+            },
+        });
     };
 
-    switch (alert.severity) {
-      case 'critical':
-        toast.error(`⚠️ ${alert.message}`, options);
-        break;
-      case 'high':
-        toast.error(`${alert.icon} ${alert.message}`, options);
-        break;
-      case 'medium':
-        toast(`${alert.icon} ${alert.message}`, options);
-        break;
-      default:
-        toast.success(`${alert.icon} ${alert.message}`, options);
-    }
-  };
+    // 2. Notificar nuevas alertas (Ahora showNotification está disponible)
+    useEffect(() => {
+        if (alerts.length > 0) {
+            const latestAlert = alerts[0]; 
+            showNotification(latestAlert, 'alert');
+        }
+    }, [alerts.length]);
 
-  const getAlertColor = (severity) => {
-    const colors = {
-      critical: '#dc3545',
-      high: '#fd7e14',
-      medium: '#ffc107',
-      low: '#28a745'
-    };
-    return colors[severity] || '#6c757d';
-  };
+    // 3. Notificar inicio de riego
+    useEffect(() => {
+        if (irrigationEvents.length > 0) {
+            const latestEvent = irrigationEvents[0];
+            showNotification(latestEvent, 'irrigation');
+        }
+    }, [irrigationEvents.length]); // Dependencia corregida: observa el cambio en la longitud
 
-  return (
-    <NotificationContext.Provider value={{ showNotification }}>
-      {children}
-    </NotificationContext.Provider>
-  );
+    return (
+        <NotificationContext.Provider value={{ showNotification }}>
+            {children}
+        </NotificationContext.Provider>
+    );
 };

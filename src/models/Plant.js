@@ -5,9 +5,6 @@ export class Plant {
 
   getCurrentPhase() {
     const daysElapsed = this.getDaysElapsed();
-    const totalDays = this.germinationDays + this.growthDays + 
-                      this.floweringDays + this.fruitingDays + this.harvestDays;
-
     let currentDay = 0;
     const phases = [
       { name: 'Germinación', days: this.germinationDays },
