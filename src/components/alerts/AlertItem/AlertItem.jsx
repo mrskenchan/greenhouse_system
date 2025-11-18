@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from '../../common/Alert/Alert';
+import Alert from '../../common/Alert/Alert';
 import './AlertItem.css';
 
 const AlertItem = ({ alert, onResolve }) => {
