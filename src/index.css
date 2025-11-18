@@ -1,4 +1,4 @@
-@import url('./src/styles/global.css'); /* Import global styles */
+@import url('./styles/global.css'); /* Import global styles */
 :root {
   --primary-color: #2ecc71;       
   --primary-dark: #27ae60;        

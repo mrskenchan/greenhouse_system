@@ -1,0 +1,1 @@
+export const IRRIGATION_DURATION_SEC = 30; // 30 segundos

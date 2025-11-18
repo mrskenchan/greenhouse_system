@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useGreenhouse } from '../context/GreenhouseContext';
+import { useGreenhouse } from './useGreenhouse';
 import { Plant } from '../models/Plant';
 
 export const usePlants = (filter = null) => {

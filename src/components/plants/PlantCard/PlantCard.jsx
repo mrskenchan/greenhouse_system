@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGreenhouse } from '../../../context/GreenhouseContext';
+import { useGreenhouse } from '../../../hooks/useGreenhouse';
 import { Plant } from '../../../models/Plant';
 import './PlantCard.css';
 

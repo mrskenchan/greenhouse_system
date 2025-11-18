@@ -1,0 +1,33 @@
+
+.reading-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--color-bg-light);
+    border: 1px solid var(--color-border);
+    margin-bottom: 8px;
+}
+
+.reading-icon {
+    font-size: 1.5rem;
+    margin-right: 12px;
+    padding-top: 5px;
+}
+
+.reading-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-text-main);
+}
+
+.reading-label {
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+}
+
+/* Clases de Estado */
+.reading-item.status-low { border-left: 4px solid var(--color-danger); }
+.reading-item.status-high { border-left: 4px solid var(--color-warning); }
+.reading-item.status-critical { border-left: 4px solid var(--color-danger); }
+.reading-item.status-normal { border-left: 4px solid var(--color-success); }

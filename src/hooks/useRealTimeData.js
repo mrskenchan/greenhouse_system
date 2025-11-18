@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useGreenhouse } from '../context/GreenhouseContext';
+import { useGreenhouse } from './useGreenhouse';
 import { sensorService } from '../services';
 
 /**

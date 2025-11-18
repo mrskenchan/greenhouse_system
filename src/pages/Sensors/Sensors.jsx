@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGreenhouse } from '../../context/GreenhouseContext';
+import { useGreenhouse } from '../../hooks/useGreenhouse';
 import { useSensors } from '../../hooks/useSensors';
 import { useRealTimeData } from '../../hooks/useRealTimeData';
 import SensorCard from '../../components/sensors/SensorCard/SensorCard';

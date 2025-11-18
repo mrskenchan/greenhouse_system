@@ -1,0 +1,20 @@
+.app-alert { 
+    padding: 1rem; 
+    margin-bottom: 1rem; 
+    border-radius: 8px; 
+    font-weight: 500; }
+
+.alert-danger { 
+    background-color: #fcebeb; 
+    color: var(--color-danger); 
+    border-left: 5px solid var(--color-danger); }
+
+.alert-warning { 
+    background-color: #fff9e6; 
+    color: var(--color-warning); 
+    border-left: 5px solid var(--color-warning); }
+
+.alert-success { 
+    background-color: #e6f5ea; 
+    color: var(--color-success); 
+    border-left: 5px solid var(--color-success); }

@@ -1,11 +1,12 @@
 .plant-card {
-  background: white;
-  border-radius: 12px;
+  background: var(--color-bg-card);
+  border-radius: var(--border-radius-md);
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  border-left: 5px solid var(--color-primary);
 }
 
 .plant-card-header {
@@ -15,8 +16,8 @@
 }
 
 .status-badge.active {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--color-success);
+  color: white;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.85rem;
@@ -33,7 +34,7 @@
 
 .progress-fill {
   height: 100%;
-  background: #2ecc71;
+  background: var(--color-primary);
   transition: width 0.3s ease;
 }
 

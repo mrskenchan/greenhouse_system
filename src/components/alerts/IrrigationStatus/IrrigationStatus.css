@@ -1,0 +1,26 @@
+.irrigation-status { 
+    padding: 1rem; 
+    border-radius: 8px; 
+    background: var(--color-bg-card); 
+}
+
+.status-indicator { 
+    padding: 8px; 
+    border-radius: 4px;
+    font-weight: bold; 
+    margin-bottom: 1rem;
+}
+
+.status-indicator.running { 
+    background-color: #dbe9ff; 
+    color: var(--color-secondary); 
+}
+
+.status-indicator.idle { 
+    background-color: #e6f5ea; 
+    color: var(--color-success); 
+}
+
+.btn-manual-irrigation { 
+    width: 100%; 
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGreenhouse } from '../../context/GreenhouseContext';
+import { useGreenhouse } from '../../hooks/useGreenhouse';
 import { usePlants } from '../../hooks/usePlants';
 import PlantTimeline from '../../components/plants/PlantTimeline/PlantTimeline';
 import './Calendar.css';

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useGreenhouse } from '../context/GreenhouseContext';
+import { useGreenhouse } from './useGreenhouse';
 
 export const useSensors = (plantId = null) => {
   const { readings, plants } = useGreenhouse();

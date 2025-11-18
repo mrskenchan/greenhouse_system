@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGreenhouse } from '../../context/GreenhouseContext';
+import { useGreenhouse } from '../../hooks/useGreenhouse';
 import { useSensors } from '../../hooks/useSensors';
 import { useRealTimeData } from '../../hooks/useRealTimeData';
 import PlantCard from '../../components/plants/PlantCard/PlantCard';

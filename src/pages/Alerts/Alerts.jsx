@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGreenhouse } from '../../context/GreenhouseContext';
+import { useGreenhouse } from '../../hooks/useGreenhouse';
 import AlertItem from '../../components/alerts/AlertItem/AlertItem';
 import IrrigationStatus from '../../components/alerts/IrrigationStatus/IrrigationStatus';
 import toast from 'react-hot-toast';

@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { GreenhouseContext } from '../context/GreenhouseContext';
+import { GreenhouseContext } from '../context/GHContext.jsx';
 
 export const useGreenhouse = () => {
     const context = useContext(GreenhouseContext);

@@ -2,6 +2,18 @@ import React from 'react';
 import SensorReading from '../SensorReading/SensorReading';
 import './SensorCard.css';
 
+const getStatus = (value, min, max) => {
+  if (value < min) return 'low';
+  if (value > max) return 'high';
+  return 'normal';
+};
+
+const getSoilStatus = (value) => {
+  if (value < 30) return { status: 'critical', message: '⚠️ Necesita riego urgente' };
+  if (value < 50) return { status: 'warning', message: 'Considerar riego pronto' };
+  return { status: 'normal', message: 'Nivel óptimo' };
+};
+
 const SensorCard = ({ plant, reading, onManualIrrigation }) => {
   if (!reading) {
     return (
@@ -68,16 +80,5 @@ const SensorCard = ({ plant, reading, onManualIrrigation }) => {
   );
 };
 
-const getStatus = (value, min, max) => {
-  if (value < min) return 'low';
-  if (value > max) return 'high';
-  return 'normal';
-};
-
-const getSoilStatus = (value) => {
-  if (value < 30) return { status: 'critical', message: '⚠️ Necesita riego urgente' };
-  if (value < 50) return { status: 'warning', message: 'Considerar riego pronto' };
-  return { status: 'normal', message: 'Nivel óptimo' };
-};
 
 export default SensorCard;
