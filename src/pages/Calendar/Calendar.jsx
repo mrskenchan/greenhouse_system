@@ -1,64 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useGreenhouse } from '../../hooks/useGreenhouse';
 import { usePlants } from '../../hooks/usePlants';
-import PlantTimeline from '../../components/plants/PlantTimeline/PlantTimeline';
+import PlantTimeline from '../../components/plants/PlantTimeline/PlantTimeline'; 
 import './Calendar.css';
 
 const Calendar = () => {
-  const { plants } = useGreenhouse();
-  const [selectedPlant, setSelectedPlant] = useState('all');
-  
-  const filteredPlants = usePlants(
-    selectedPlant !== 'all' ? { id: selectedPlant } : null
-  );
+    const { loading } = useGreenhouse();
+    const filteredPlants = usePlants(); // Asume que usePlants trae todas las plantas por defecto
 
-  return (
-    <div className="calendar-page">
-      <header className="calendar-header">
-        <h1>📅 Calendario del Ciclo de Plantas</h1>
-        
-        <select 
-          className="plant-filter"
-          value={selectedPlant}
-          onChange={(e) => setSelectedPlant(e.target.value)}
-        >
-          <option value="all">Todas las plantas</option>
-          {plants.map(plant => (
-            <option key={plant.id} value={plant.id}>
-              {plant.commonName}
-            </option>
-          ))}
-        </select>
-      </header>
+    if (loading) return <div>Cargando calendario...</div>;
 
-      <div className="timeline-container">
-        {(selectedPlant === 'all' ? plants : filteredPlants).map(plant => (
-          <PlantTimeline key={plant.id} plant={plant} />
-        ))}
-      </div>
+    const phases = ['Germinación', 'Crecimiento', 'Floración', 'Fructificación', 'Cosecha'];
 
-      <div className="legend">
-        <h4>Leyenda de Fases</h4>
-        <div className="legend-items">
-          <span className="legend-item">
-            <span className="color-box germination"></span> Germinación
-          </span>
-          <span className="legend-item">
-            <span className="color-box growth"></span> Crecimiento
-          </span>
-          <span className="legend-item">
-            <span className="color-box flowering"></span> Floración
-          </span>
-          <span className="legend-item">
-            <span className="color-box fruiting"></span> Fructificación
-          </span>
-          <span className="legend-item">
-            <span className="color-box harvest"></span> Cosecha
-          </span>
+    return (
+        <div className="calendar-page">
+            <h1>🗓️ Calendario del Ciclo de Plantas</h1>
+            
+            <div className="calendar-options">
+                 {/* Aquí iría el selector de plantas */}
+                 <select>
+                    <option>Todas las plantas</option>
+                 </select>
+            </div>
+            
+            <div className="legend-container">
+                <p className="legend-title">Leyenda de Fases:</p>
+                <div className="phases-list">
+                    {phases.map(p => <span key={p} className="phase-legend-item">{p}</span>)}
+                </div>
+            </div>
+
+            <section className="timeline-section">
+                {filteredPlants.map(plant => (
+                    <PlantTimeline key={plant.id} plant={plant} />
+                ))}
+            </section>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Calendar;

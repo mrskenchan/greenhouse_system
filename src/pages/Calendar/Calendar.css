@@ -1,0 +1,41 @@
+
+.calendar-page h1 {
+    margin-bottom: 1.5rem;
+}
+
+.calendar-options {
+    margin-bottom: 1.5rem;
+}
+
+.legend-container {
+    padding: 1rem;
+    background-color: var(--color-bg-card);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.legend-title {
+    font-weight: bold;
+    color: var(--color-text-main);
+    margin-bottom: 0.5rem;
+}
+
+.phases-list {
+    display: flex;
+    gap: 15px;
+}
+
+.phase-legend-item {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: var(--color-bg-light);
+    color: var(--color-text-main);
+}
+
+.timeline-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}

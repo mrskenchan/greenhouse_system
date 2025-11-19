@@ -13,9 +13,21 @@ body {
   line-height: 1.6;
 }
 
+.app-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.app-content {
+  flex-grow: 1;
+}
+
 /* Base de la aplicación */
 #root {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 h1, h2, h3 {

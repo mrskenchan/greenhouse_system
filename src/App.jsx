@@ -17,7 +17,7 @@ function App() {
       <Navbar /> 
       
       <main className="app-content">
-        <Routes> {/* Definición de rutas */}
+        <Routes> 
           {/* Ruta Raíz */}
           <Route path="/" element={<Dashboard />} />
           

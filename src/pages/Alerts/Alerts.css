@@ -1,0 +1,21 @@
+
+.alerts-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Panel de riego más pequeño que la lista */
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.irrigation-panel, .alerts-list-panel {
+    background: var(--color-bg-card);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.irrigation-panel h2, .alerts-list-panel h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 10px;
+}
