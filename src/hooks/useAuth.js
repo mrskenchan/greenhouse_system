@@ -1,6 +1,6 @@
 // src/hooks/useAuth.js
 import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContextDef'; // Importamos el contexto
+import { AuthContext } from '../context/AuthContext'; // Importamos el contexto
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { auth } from '../services/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { AuthContext } from './AuthContextDef';
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext(); 
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
