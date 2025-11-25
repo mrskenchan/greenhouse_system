@@ -1,40 +1,53 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
-import Navbar from './components/common/Navbar/Navbar.jsx';
-import Dashboard from './pages/Dashboard/Dashboard.jsx';
-import Sensors from './pages/Sensors/Sensors.jsx';
-import Alerts from './pages/Alerts/Alerts.jsx';
-import Calendar from './pages/Calendar/Calendar.jsx';
+// 1. IMPORTACIONES CORREGIDAS
+import { AuthProvider } from './context/AuthContext'; 
+import { useAuth } from './hooks/useAuth';            
 
-import './index.css';
+import Navbar from './components/common/Navbar/Navbar';
+import Dashboard from './pages/Dashboard/Dashboard';
+import NewPlant from './pages/NewPlant/NewPlant';
+import Calendar from './pages/Calendar/Calendar';
+import Sensors from './pages/Sensors/Sensors';
+import Alerts from './pages/Alerts/Alerts';
+import Login from './pages/Login/Login'; 
+
 import './styles/global.css';
+
+const PrivateRoute = ({ children }) => {
+  const { currentUser } = useAuth(); // <--- AQUÍ SE USA LA VARIABLE
+  return currentUser ? children : <Navigate to="/login" />;
+};
 
 function App() {
   return (
-    <BrowserRouter> {/* Envolver la app en el Router */}
-      <Navbar /> 
-      
-      <main className="app-content">
-        <Routes> 
-          {/* Ruta Raíz */}
-          <Route path="/" element={<Dashboard />} />
+    <AuthProvider> {/* <--- Envolver TODO */}
+      <BrowserRouter>
+        {/* Solo mostrar Navbar si está logueado (opcional, pero recomendado) */}
+        <Routes>
+          <Route path="/login" element={<Login />} />
           
-          {/* Rutas con tus NavLinks */}
-          <Route path="/calendario" element={<Calendar />} />
-          <Route path="/sensores" element={
-            <Sensors />} 
-          />
-          <Route path="/alertas" element={<Alerts />} />
-          
-          {/* Manejo de ruta no encontrada (opcional) */}
-          <Route path="*" element={<h2>404 | Página no encontrada</h2>} />
+          {/* Rutas Protegidas */}
+          <Route path="/*" element={
+            <PrivateRoute>
+              <Navbar />
+              <main className="app-content">
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/nueva-planta" element={<NewPlant />} />
+                  <Route path="/calendario" element={<Calendar />} />
+                  <Route path="/sensores" element={<Sensors />} />
+                  <Route path="/alertas" element={<Alerts />} />
+                </Routes>
+              </main>
+            </PrivateRoute>
+          } />
         </Routes>
-      </main>
-
-      <Toaster position="bottom-right" reverseOrder={false} />
-    </BrowserRouter>
+        <Toaster position="bottom-right" />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

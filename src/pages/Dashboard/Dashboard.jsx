@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useGreenhouse } from '../../hooks/useGreenhouse';
 import { useSensors } from '../../hooks/useSensors';
 import { useRealTimeData } from '../../hooks/useRealTimeData';
@@ -18,7 +19,14 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <h1>🌱 Dashboard del Invernadero</h1>
+      
+      {/* Encabezado con Botón de Acción */}
+      <header className="dashboard-header-actions" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
+        <h1>🌱 Dashboard del Invernadero</h1>
+        <Link to="/nueva-planta" className="btn-primary" style={{textDecoration: 'none'}}>
+          + Agregar Planta
+        </Link>
+      </header>
 
       {/* Métricas clave */}
       <div className="metrics-grid">

@@ -1,55 +1,100 @@
-/* src/services/plantService.js */
+import { ref, push, set, get, child } from 'firebase/database';
+import { database } from './firebase';
 
-// Helper para crear fechas pasadas (para simular que ya plantaste hace tiempo)
-const daysAgo = (days) => {
-  const date = new Date();
-  date.setDate(date.getDate() - days);
-  return date.toISOString();
-};
+const PLANTS_NODE = 'PLANTS';
 
+/**
+ * Obtiene todas las plantas de Firebase y las convierte en un array.
+ */
 export const getAll = async () => {
-  return [
-    { 
-      id: 1, 
-      commonName: 'Tomate Cherry', 
-      status: 'active',
-      // IMPORTANTE: Tu modelo usa 'plantingDate', no 'sowingDate'
-      plantingDate: daysAgo(35), // Plantado hace 35 días
-      
-      // Ciclos definidos (días) para que tu lógica funcione
-      germinationDays: 7,
-      growthDays: 45,
-      floweringDays: 20,
-      fruitingDays: 30,
-      harvestDays: 10,
+  try {
+    const dbRef = ref(database);
+    const snapshot = await get(child(dbRef, PLANTS_NODE));
 
-      // Umbrales para alertas
-      tempMin: 18, tempMax: 28, 
-      humidityMin: 40, humidityMax: 70
-    },
-    { 
-      id: 2, 
-      commonName: 'Lechuga Hidropónica', 
-      status: 'active',
-      plantingDate: daysAgo(12), // Plantado hace 12 días
-      
-      germinationDays: 5,
-      growthDays: 35,
-      floweringDays: 0, // La lechuga se cosecha antes de florecer
-      fruitingDays: 0,
-      harvestDays: 5,
-
-      tempMin: 15, tempMax: 22, 
-      humidityMin: 60, humidityMax: 80
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      // Convertir el objeto de objetos de Firebase en un array para React
+      return Object.keys(data).map(key => ({
+        id: key,
+        ...data[key]
+      }));
+    } else {
+      return [];
     }
-  ];
+  } catch (error) {
+    console.error("Error obteniendo plantas:", error);
+    return [];
+  }
 };
 
-export const create = async (data) => {
-  // Simulación de creación
-  return { 
-    ...data, 
-    id: Date.now(),
-    plantingDate: new Date().toISOString() 
+/**
+ * Crea una nueva planta en Firebase (Genera UID automáticamente)
+ */
+export const create = async (plantData) => {
+  try {
+    const plantsRef = ref(database, PLANTS_NODE);
+    const newPlantRef = push(plantsRef); // Genera el UID
+    const plantId = newPlantRef.key;
+
+    const newPlant = {
+      ...plantData,
+      id: plantId,
+      plantingDate: plantData.plantingDate || new Date().toISOString()
+    };
+
+    await set(newPlantRef, newPlant);
+    return newPlant;
+  } catch (error) {
+    console.error("Error creando planta:", error);
+    throw error;
+  }
+};
+
+/**
+ * 🛠️ FUNCIÓN DE CONFIGURACIÓN INICIAL (SEED)
+ * Ejecuta esto una vez para crear la estructura base y obtener el ID para Arduino.
+ */
+export const seedDatabase = async () => {
+  console.log("Iniciando creación de estructura base...");
+  const plantsRef = ref(database, PLANTS_NODE);
+  
+  // 1. Generar referencia y UID
+  const newPlantRef = push(plantsRef);
+  const plantId = newPlantRef.key;
+
+  // 2. Datos de la Planta Inicial (Tomate Cherry)
+  const initialPlant = {
+    id: plantId,
+    commonName: "Tomate Cherry",
+    description: "Planta de prueba inicial",
+    plantingDate: new Date().toISOString(),
+    
+    // Ciclos (Días)
+    germinationDays: 7,
+    growthDays: 45,
+    floweringDays: 20,
+    fruitingDays: 30,
+    harvestDays: 10,
+    
+    // Umbrales de Sensores (Para alertas)
+    tempMin: 18,
+    tempMax: 28,
+    humidityMin: 40,
+    humidityMax: 70,
+    soilMoistureMin: 30 // % Mínimo antes de alerta de riego
   };
+
+  try {
+    // 3. Guardar en Firebase
+    await set(newPlantRef, initialPlant);
+    
+    const mensaje = `✅ ESTRUCTURA CREADA CON ÉXITO.\n\n⚠️ COPIA ESTE ID PARA TU ARDUINO:\n${plantId}`;
+    console.log(mensaje);
+    alert(mensaje);
+    
+    return plantId;
+  } catch (error) {
+    console.error("Error fatal al inicializar:", error);
+    alert("Error al conectar con Firebase. Revisa la consola.");
+  }
 };
