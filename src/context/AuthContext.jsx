@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { auth } from '../services/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from './AuthContext.js';
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
