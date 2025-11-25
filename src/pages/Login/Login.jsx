@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import './Login.css'; 
 
@@ -11,15 +11,21 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setError('');
-      await login(email, password);
-      navigate('/'); // Redirigir al Dashboard tras login exitoso
-    } catch (err) {
-      setError('Fallo al iniciar sesión. Verifica tus datos.', err);
-    }
-  };
+  e.preventDefault();
+  try {
+    setError('');
+    console.log("Intentando ingresar con:", email); // 1. Ver si llega el dato
+    await login(email, password);
+    console.log("Login exitoso");
+    navigate('/');
+  } catch (err) {
+    // 2. IMPRIMIR EL ERROR REAL EN CONSOLA
+    console.error("🔥 ERROR FIREBASE:", err.code, err.message);
+    
+    // 3. MOSTRAR EL CÓDIGO DE ERROR EN PANTALLA
+    setError(`Error: ${err.code} - ${err.message}`);
+  }
+};
 
   return (
     <div className="login-container">
