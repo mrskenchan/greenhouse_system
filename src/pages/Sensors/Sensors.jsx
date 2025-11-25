@@ -1,96 +1,102 @@
 import React, { useState } from 'react';
 import { useGreenhouse } from '../../hooks/useGreenhouse';
-import { useSensors } from '../../hooks/useSensors';
-import { useRealTimeData } from '../../hooks/useRealTimeData';
-import SensorCard from '../../components/sensors/SensorCard/SensorCard';
-import toast from 'react-hot-toast';
+import { useReadingsHistory } from '../../hooks/useReadingsHistory';
+import TemperatureChart from '../../components/sensors/TemperatureChart/TemperatureChart';
+import SensorReading from '../../components/sensors/SensorReading/SensorReading';
+import Loader from '../../components/common/Loader/Loader';
 import './Sensors.css';
 
 const Sensors = () => {
-  const { plants, startIrrigation, refresh } = useGreenhouse();
-  const [selectedPlant, setSelectedPlant] = useState('all');
-  const { readings } = useSensors(selectedPlant !== 'all' ? selectedPlant : null);
-  
-  useRealTimeData(selectedPlant !== 'all' ? selectedPlant : null);
+    const { plants, loading: plantsLoading } = useGreenhouse();
+    // Estado para seleccionar qué planta ver (por defecto la primera si existe)
+    const [selectedPlantId, setSelectedPlantId] = useState(plants[0]?.id || null);
+    
+    // Hook de historial conectado a la planta seleccionada
+    const { history, loading: historyLoading } = useReadingsHistory(selectedPlantId);
 
-  const handleRefresh = async () => {
-    toast.promise(
-      refresh(),
-      {
-        loading: 'Actualizando datos...',
-        success: '✓ Datos actualizados',
-        error: 'Error al actualizar'
-      }
-    );
-  };
-
-  const handleManualIrrigation = async (plantId) => {
-    const plant = plants.find(p => p.id === plantId);
-    if (!plant) return;
-
-    const confirmed = window.confirm(
-      `¿Iniciar riego manual para ${plant.commonName}?`
-    );
-
-    if (confirmed) {
-      toast.promise(
-        startIrrigation(plantId, 'manual'),
-        {
-          loading: 'Iniciando riego...',
-          success: '💧 Riego iniciado',
-          error: 'Error al iniciar riego'
+    // Efecto para seleccionar la primera planta automáticamente al cargar
+    React.useEffect(() => {
+        if (plants.length > 0 && !selectedPlantId) {
+            setSelectedPlantId(plants[0].id);
         }
-      );
-    }
-  };
+    }, [plants, selectedPlantId]);
 
-  return (
-    <div className="sensors-page">
-      <header className="sensors-header">
-        <h1>📊 Monitoreo de Sensores en Tiempo Real</h1>
-        <div className="header-actions">
-          <span className="last-update">
-            Última actualización: {new Date().toLocaleTimeString('es-CL')}
-          </span>
-          <button onClick={handleRefresh} className="btn-refresh">
-            🔄 Actualizar
-          </button>
+    if (plantsLoading) return <Loader />;
+
+    // Buscar datos de la planta seleccionada para mostrar nombre, etc.
+    const selectedPlant = plants.find(p => p.id === selectedPlantId);
+    const latestReading = history.length > 0 ? history[history.length - 1] : null;
+
+    return (
+        <div className="sensors-page">
+            <div className="sensors-header">
+                <h1>📊 Monitoreo Detallado</h1>
+                
+                {/* Selector de Planta */}
+                <div className="plant-selector">
+                    <label>Seleccionar Planta:</label>
+                    <select 
+                        value={selectedPlantId || ''} 
+                        onChange={(e) => setSelectedPlantId(e.target.value)}
+                    >
+                        {plants.map(p => (
+                            <option key={p.id} value={p.id}>{p.commonName}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+
+            {selectedPlantId && selectedPlant ? (
+                <div className="sensors-grid">
+                    {/* COLUMNA IZQUIERDA: GRÁFICOS */}
+                    
+                    <div className="chart-section">
+                      <div className="chart-card">
+                        <h3>🌡️ Histórico de Temperatura</h3>
+                        {/* SOLUCIÓN: Usamos historyLoading para dar feedback visual */}
+                        {historyLoading ? (
+                            <div style={{padding: '2rem', textAlign: 'center', color: '#666'}}>
+                                Cargando historial...
+                            </div>
+                        ) : (
+                            <TemperatureChart data={history} />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* COLUMNA DERECHA: ÚLTIMA LECTURA */}
+                    <div className="readings-panel">
+                        <h3>Lectura Actual</h3>
+                        {latestReading ? (
+                            <>
+                                <SensorReading 
+                                    label="Temperatura" 
+                                    value={latestReading.temperature} unit="°C" icon="🌡️" 
+                                    status={latestReading.temperature > selectedPlant.tempMax ? 'high' : 'normal'}
+                                />
+                                <SensorReading 
+                                    label="Humedad" 
+                                    value={latestReading.humidity} unit="%" icon="💧" 
+                                />
+                                <SensorReading 
+                                    label="Suelo" 
+                                    value={latestReading.soilMoisture} unit="%" icon="🌱" 
+                                    status={latestReading.soilMoisture < selectedPlant.soilMoistureMin ? 'critical' : 'normal'}
+                                />
+                                <div className="timestamp">
+                                    Actualizado: {new Date(latestReading.timestamp).toLocaleTimeString()}
+                                </div>
+                            </>
+                        ) : (
+                            <p>Esperando datos del Arduino...</p>
+                        )}
+                    </div>
+                </div>
+            ) : (
+                <p>No hay plantas registradas. Ve al Dashboard para agregar una.</p>
+            )}
         </div>
-      </header>
-
-      <div className="plant-selector">
-        <label>Seleccionar Planta:</label>
-        <select 
-          value={selectedPlant}
-          onChange={(e) => setSelectedPlant(e.target.value)}
-          className="form-control"
-        >
-          <option value="all">Vista General</option>
-          {plants.map(plant => (
-            <option key={plant.id} value={plant.id}>
-              {plant.commonName}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="sensors-grid">
-        {plants
-          .filter(p => selectedPlant === 'all' || p.id === selectedPlant)
-          .map(plant => {
-            const reading = readings.find(r => r.plantId === plant.id);
-            return (
-              <SensorCard
-                key={plant.id}
-                plant={plant}
-                reading={reading}
-                onManualIrrigation={handleManualIrrigation}
-              />
-            );
-          })}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Sensors;
