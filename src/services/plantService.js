@@ -3,9 +3,17 @@ import { database } from './firebase';
 
 const PLANTS_NODE = 'PLANTS';
 
-/**
- * Obtiene todas las plantas de Firebase y las convierte en un array.
- */
+// VALORES POR DEFECTO (Para revivir plantas viejas)
+const DEFAULT_PLANT_VALUES = {
+  soilMoistureMax: 80, 
+  soilMoistureMin: 30,
+  humidityMax: 80,
+  humidityMin: 40,
+  tempMax: 30,
+  tempMin: 15,
+  // Agregar aquí cualquier otro campo nuevo futuro
+};
+
 export const getAll = async () => {
   try {
     const dbRef = ref(database);
@@ -13,10 +21,13 @@ export const getAll = async () => {
 
     if (snapshot.exists()) {
       const data = snapshot.val();
-      // Convertir el objeto de objetos de Firebase en un array para React
+      
+      
       return Object.keys(data).map(key => ({
         id: key,
-        ...data[key]
+        ...DEFAULT_PLANT_VALUES, // 1. Ponemos los valores por defecto primero
+        ...data[key]             // 2. Sobreescribimos con los datos reales de Firebase
+                                 // (Si data[key] tiene el valor, gana. Si no, queda el default)
       }));
     } else {
       return [];
@@ -33,10 +44,12 @@ export const getAll = async () => {
 export const create = async (plantData) => {
   try {
     const plantsRef = ref(database, PLANTS_NODE);
-    const newPlantRef = push(plantsRef); // Genera el UID
+    const newPlantRef = push(plantsRef);
     const plantId = newPlantRef.key;
 
+    // Aseguramos que al crear también lleve todos los campos
     const newPlant = {
+      ...DEFAULT_PLANT_VALUES,
       ...plantData,
       id: plantId,
       plantingDate: plantData.plantingDate || new Date().toISOString()
@@ -50,9 +63,7 @@ export const create = async (plantData) => {
   }
 };
 
-/**
- * Actualizar una planta existente
- */
+// Modificar datos de una planta existente
 export const updatePlantData = async (plantId, plantData) => {
   try {
     const plantRef = ref(database, `${PLANTS_NODE}/${plantId}`);
@@ -64,18 +75,14 @@ export const updatePlantData = async (plantId, plantData) => {
   }
 };
 
-/**
- * Eliminar una planta
- */
+// Eliminar una planta por su ID
 export const removePlant = async (plantId) => {
   try {
     const plantRef = ref(database, `${PLANTS_NODE}/${plantId}`);
     await remove(plantRef);
-    // Opcional: También podrías borrar sus lecturas aquí si quisieras limpiar la BD
     return true;
   } catch (error) {
     console.error("Error eliminando planta:", error);
     throw error;
   }
 };
-
