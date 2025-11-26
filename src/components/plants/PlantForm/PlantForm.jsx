@@ -132,8 +132,16 @@ const PlantForm = ({ initialData = null  }) => {
             <input type="number" name="humidityMin" value={formData.humidityMin} onChange={handleChange} />
           </div>
           <div className="form-group">
+            <label>Humedad Máx (%)</label>
+            <input type="number" name="humidityMax" value={formData.humidityMax} onChange={handleChange} />
+          </div>
+          <div className="form-group">
             <label>Humedad Suelo Mín (%)</label>
             <input type="number" name="soilMoistureMin" value={formData.soilMoistureMin} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+            <label>Suelo Máx (%) 🚫</label>
+            <input type="number" name="soilMoistureMax" value={formData.soilMoistureMax} onChange={handleChange} />
           </div>
         </div>
       </section>
