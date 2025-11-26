@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { plantService, alertService, irrigationService } from '../services';
 import { GreenhouseContext } from './GHContext';
 
@@ -47,6 +48,31 @@ export const GreenhouseProvider = ({ children }) => {
         }
     };
 
+    // Función para Eliminar
+    const deletePlant = async (plantId) => {
+    if(!window.confirm("¿Estás seguro de eliminar esta planta? Se perderá su configuración.")) return;
+        try {
+            await plantService.removePlant(plantId);
+            // Actualizar estado local
+            setPlants(prev => prev.filter(p => p.id !== plantId));
+            toast.success("Planta eliminada");
+        } catch (err) {
+            toast.error("Error al eliminar", err.message);
+        }
+    };
+
+    // Función para Editar
+    const modifyPlant = async (plantId, data) => {
+        try {
+            await plantService.updatePlantData(plantId, data);
+            // Actualizar estado local
+                setPlants(prev => prev.map(p => p.id === plantId ? { ...p, ...data } : p));
+                return true;
+        } catch (err) {
+            throw new Error(err.message);
+        }
+    };
+
     // Actualizar lectura de sensor 
     const updateReading = (newReading) => {
         setReadings(prev => {
@@ -82,7 +108,7 @@ export const GreenhouseProvider = ({ children }) => {
     };
 
     const value = {
-        plants, readings, alerts, irrigationEvents, loading, error, 
+        plants, readings, alerts, irrigationEvents, loading, error, deletePlant, modifyPlant,
         addPlant, updateReading, resolveAlert, startIrrigation, refresh: loadInitialData
     };
 

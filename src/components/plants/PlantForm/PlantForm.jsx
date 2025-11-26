@@ -4,14 +4,14 @@ import { useGreenhouse } from '../../../hooks/useGreenhouse';
 import toast from 'react-hot-toast';
 import './PlantForm.css';
 
-const PlantForm = () => {
-  const { addPlant } = useGreenhouse();
+const PlantForm = ({ initialData = null  }) => {
+  const { addPlant, modifyPlant } = useGreenhouse();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    commonName: '',
-    plantingDate: new Date().toISOString().split('T')[0], // Fecha de hoy por defecto
+    commonName: initialData?.commonName || '',
+    plantingDate: initialData?.plantingDate || new Date().toISOString().split('T')[0], // Fecha de hoy por defecto
     // Ciclos (Días)
     germinationDays: 7,
     growthDays: 30,
@@ -46,8 +46,16 @@ const PlantForm = () => {
         plantingDate: new Date(formData.plantingDate).toISOString()
       };
       
-      await addPlant(submissionData);
-      toast.success('¡Planta registrada correctamente!');
+      if (initialData) {
+        // Editando planta existente
+        await modifyPlant(initialData.id, submissionData);
+        toast.success('¡Planta actualizada correctamente!');
+      } else {
+        // Creando nueva planta
+        await addPlant(submissionData);
+        toast.success('¡Planta registrada correctamente!');
+      }
+      
       navigate('/'); // Volver al dashboard
     } catch (error) {
       toast.error('Error al guardar la planta');

@@ -1,10 +1,13 @@
 import React from 'react';
 import { useGreenhouse } from '../../../hooks/useGreenhouse';
+import { useNavigate } from 'react-router-dom';
 import { Plant } from '../../../models/Plant';
 import './PlantCard.css';
 
 const PlantCard = ({ plant }) => {
   const { readings } = useGreenhouse();
+  const { deletePlant } = useGreenhouse();
+  const navigate = useNavigate();
   const plantModel = new Plant(plant);
   const reading = readings.find(r => r.plantId === plant.id);
   const currentPhase = plantModel.getCurrentPhase();
@@ -16,6 +19,23 @@ const PlantCard = ({ plant }) => {
         <span className={`status-badge ${plant.status}`}>
           {plant.status}
         </span>
+      </div>
+
+      <div className="card-actions" style={{marginTop: '1rem', display: 'flex', gap: '10px'}}>
+        <button 
+            className="btn-edit"
+            onClick={() => navigate(`/editar-planta/${plant.id}`)}
+            style={{flex: 1, background: '#3498db', color: 'white', border: 'none', padding: '8px', borderRadius: '4px', cursor: 'pointer'}}
+        >
+            ✏️ Editar
+        </button>
+        <button 
+            className="btn-delete"
+            onClick={() => deletePlant(plant.id)}
+            style={{flex: 1, background: '#e74c3c', color: 'white', border: 'none', padding: '8px', borderRadius: '4px', cursor: 'pointer'}}
+        >
+            🗑️ Borrar
+        </button>
       </div>
 
       <div className="plant-phase">

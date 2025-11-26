@@ -1,4 +1,4 @@
-import { ref, push, set, get, child } from 'firebase/database';
+import { ref, push, set, get, child, update, remove } from 'firebase/database';
 import { database } from './firebase';
 
 const PLANTS_NODE = 'PLANTS';
@@ -51,50 +51,31 @@ export const create = async (plantData) => {
 };
 
 /**
- * 🛠️ FUNCIÓN DE CONFIGURACIÓN INICIAL (SEED)
- * Ejecuta esto una vez para crear la estructura base y obtener el ID para Arduino.
+ * Actualizar una planta existente
  */
-export const seedDatabase = async () => {
-  console.log("Iniciando creación de estructura base...");
-  const plantsRef = ref(database, PLANTS_NODE);
-  
-  // 1. Generar referencia y UID
-  const newPlantRef = push(plantsRef);
-  const plantId = newPlantRef.key;
-
-  // 2. Datos de la Planta Inicial (Tomate Cherry)
-  const initialPlant = {
-    id: plantId,
-    commonName: "Tomate Cherry",
-    description: "Planta de prueba inicial",
-    plantingDate: new Date().toISOString(),
-    
-    // Ciclos (Días)
-    germinationDays: 7,
-    growthDays: 45,
-    floweringDays: 20,
-    fruitingDays: 30,
-    harvestDays: 10,
-    
-    // Umbrales de Sensores (Para alertas)
-    tempMin: 18,
-    tempMax: 28,
-    humidityMin: 40,
-    humidityMax: 70,
-    soilMoistureMin: 30 // % Mínimo antes de alerta de riego
-  };
-
+export const updatePlantData = async (plantId, plantData) => {
   try {
-    // 3. Guardar en Firebase
-    await set(newPlantRef, initialPlant);
-    
-    const mensaje = `✅ ESTRUCTURA CREADA CON ÉXITO.\n\n⚠️ COPIA ESTE ID PARA TU ARDUINO:\n${plantId}`;
-    console.log(mensaje);
-    alert(mensaje);
-    
-    return plantId;
+    const plantRef = ref(database, `${PLANTS_NODE}/${plantId}`);
+    await update(plantRef, plantData);
+    return { id: plantId, ...plantData };
   } catch (error) {
-    console.error("Error fatal al inicializar:", error);
-    alert("Error al conectar con Firebase. Revisa la consola.");
+    console.error("Error actualizando planta:", error);
+    throw error;
   }
 };
+
+/**
+ * Eliminar una planta
+ */
+export const removePlant = async (plantId) => {
+  try {
+    const plantRef = ref(database, `${PLANTS_NODE}/${plantId}`);
+    await remove(plantRef);
+    // Opcional: También podrías borrar sus lecturas aquí si quisieras limpiar la BD
+    return true;
+  } catch (error) {
+    console.error("Error eliminando planta:", error);
+    throw error;
+  }
+};
+

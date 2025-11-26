@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './hooks/useAuth';            
 
 import Navbar from './components/common/Navbar/Navbar';
+import EditPlant from './pages/EditPlant/EditPlant';
 import Dashboard from './pages/Dashboard/Dashboard';
 import NewPlant from './pages/NewPlant/NewPlant';
 import Calendar from './pages/Calendar/Calendar';
@@ -40,6 +41,7 @@ function App() {
                   <Route path="/calendario" element={<Calendar />} />
                   <Route path="/sensores" element={<Sensors />} />
                   <Route path="/alertas" element={<Alerts />} />
+                  <Route path="/editar-planta/:id" element={<EditPlant />} />
                 </Routes>
               </main>
             </PrivateRoute>
