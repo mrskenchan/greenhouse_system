@@ -1,85 +1,103 @@
-
+/* 1. Contenedor Principal: Efecto Cristal y Sticky */
 .navbar {
-    background-color: var(--color-bg-card);
-    box-shadow: var(--shadow-sm);
-    padding: 1rem 2rem;
+    background-color: rgba(255, 255, 255, 0.95); /* Casi opaco para limpieza */
+    -webkit-backdrop-filter: blur(10px); /* Efecto difuminado detrás (Safari soporte) */
+    backdrop-filter: blur(10px); /* Efecto difuminado detrás */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Sombra suave y difusa */
+    padding: 0.8rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--color-border);
+    position: sticky; /* Se queda pegada arriba al hacer scroll */
+    top: 0;
+    z-index: 1000; /* Siempre por encima del contenido */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+/* 2. Marca / Logo */
+.navbar-brand h1 {
+    font-size: 1.5rem;
+    font-weight: 800; /* Extra negrita */
+    background: linear-gradient(45deg, var(--color-primary), #27ae60); /* Gradiente sutil */
+    background-clip: text;
+    -webkit-text-fill-color: transparent; /* Texto con gradiente */
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* 3. Menú Central */
 .nav-menu {
     list-style: none;
     display: flex;
     flex-grow: 1;
     justify-content: center;
-    gap: 2.5rem;
+    gap: 1rem; /* Espacio entre botones */
     margin: 0;
     padding: 0;
 }
 
 .nav-menu li {
-    display: inline-block;
+    display: flex;
+    align-items: center;
 }
 
-.navbar-brand h1 { 
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--color-text-main);
-}
-
-.navbar-links {
+/* 4. Enlaces (Estilo Base) */
+.nav-link {
     text-decoration: none;
-    color: var(--color-text-main);
+    color: var(--color-text-light); /* Gris suave por defecto */
     font-weight: 600;
-    padding: 8px 15px;
-    border-radius: var(--border-radius-sm);
-    transition: all 0.3s ease;
-    border-bottom: 3px solid transparent;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px; /* Forma de Píldora completa */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transición elástica */
+    border: 1px solid transparent; /* Reserva espacio para evitar saltos */
 }
 
-.nav.link.active {
-    color: var(--color-primary);
-    background-color: #f2fcf6;
-    border-bottom: 3px solid var(--color-primary);
-}
-
+/* 5. Estado HOVER (Al pasar el mouse) */
 .nav-link:hover:not(.active) {
-    background-color: var(--color-bg-light);
     color: var(--color-primary);
+    background-color: rgba(46, 204, 113, 0.1); /* Verde muy muy suave */
+    transform: translateY(-1px); /* Pequeña levitación */
 }
 
-.nav-item {
-    text-decoration: none;
-    color: var(--color-text-main);
-    font-weight: 500;
-    padding: 5px 10px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+/* 6. Estado ACTIVE (Página actual) - Estilo Elegante */
+.nav-link.active {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); /* Sombra verde brillante (Glow) */
+    transform: translateY(0);
 }
 
-.nav-item:hover {
-    background-color: var(--color-bg-light);
-    color: var(--color-primary);
-}
-
-.navbar-profile {
-    color: var(--color-text-light);
-}
-
+/* 7. Botón Cerrar Sesión (Estilo Outline Elegante) */
 .btn-logout {
-    background-color: transparent;
+    background: transparent;
     border: 1px solid #e74c3c;
     color: #e74c3c;
-    padding: 5px 12px;
-    border-radius: 4px;
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-logout:hover {
     background-color: #e74c3c;
     color: white;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); /* Glow rojo */
+    transform: translateY(-1px);
+}
+
+/* Ajuste Responsivo Básico */
+@media (max-width: 768px) {
+    .nav-link {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+    .nav-menu {
+        gap: 0.5rem;
+    }
 }
