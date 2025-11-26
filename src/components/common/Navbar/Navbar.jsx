@@ -1,8 +1,20 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../hooks/useAuth';
 import './Navbar.css';
 
 const Navbar = () => {
+  const { logout, currentUser } = useAuth(); 
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error("Error al salir:", error);
+    }
+  };
   return (
     <nav className="navbar">
       <div className="navbar-brand">
@@ -31,6 +43,14 @@ const Navbar = () => {
           </NavLink>
         </li>
       </ul>
+      {/* Sección de Perfil / Salir */}
+      <div className="navbar-profile">
+        {currentUser && (
+            <button onClick={handleLogout} className="btn-logout">
+                Cerrar Sesión 🚪
+            </button>
+        )}
+      </div>  
     </nav>
   );
 };
