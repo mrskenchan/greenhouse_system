@@ -19,3 +19,51 @@
     border-bottom: 1px solid var(--color-border);
     padding-bottom: 10px;
 }
+
+/* SECCIÓN DE ALERTAS CRÍTICAS (TIEMPO REAL) */
+.critical-alerts-section {
+    margin-bottom: 2rem;
+    animation: slideDown 0.5s ease-out;
+}
+
+.critical-banner {
+    background-color: #fee2e2; /* Fondo Rojo Suave */
+    border-left: 6px solid #ef4444; /* Borde Rojo Intenso */
+    padding: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.15);
+}
+
+.critical-banner .icon {
+    font-size: 2rem;
+    animation: pulse 2s infinite;
+}
+
+.critical-banner .content strong {
+    color: #b91c1c;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.critical-banner .content p {
+    color: #7f1d1d;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Animación de palpitación para el icono */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
