@@ -3,7 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 // 1. IMPORTACIONES CORREGIDAS
-import { AuthProvider } from './context/AuthContext'; 
+import { AuthProvider } from './context/AuthContext';
+import { useAlertLogger } from './hooks/useAlertLogger'; 
 import { useAuth } from './hooks/useAuth';            
 
 import Navbar from './components/common/Navbar/Navbar';
@@ -17,6 +18,11 @@ import Login from './pages/Login/Login';
 
 import './styles/global.css';
 
+const AlertWatchdog = () => {
+  useAlertLogger(); // <--- Aquí corre la lógica
+  return null; // No renderiza nada visual
+};
+
 const PrivateRoute = ({ children }) => {
   const { currentUser } = useAuth(); // <--- AQUÍ SE USA LA VARIABLE
   return currentUser ? children : <Navigate to="/login" />;
@@ -27,6 +33,7 @@ function App() {
     <AuthProvider> {/* <--- Envolver TODO */}
       <BrowserRouter>
         {/* Solo mostrar Navbar si está logueado (opcional, pero recomendado) */}
+        <AlertWatchdog /> {/* <--- Componente que vigila las alertas */}
         <Routes>
           <Route path="/login" element={<Login />} />
           
