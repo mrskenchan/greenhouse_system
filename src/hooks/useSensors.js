@@ -34,15 +34,26 @@ export const useSensors = (plantId = null) => {
       if (!plant) return null;
 
       const issues = [];
-      // Verificar temperatura
+      
+      // 1. Verificar Temperatura (Ya lo tenías)
       if (reading.temperature < plant.tempMin) issues.push('Temp. Baja ❄️');
       if (reading.temperature > plant.tempMax) issues.push('Temp. Alta 🔥');
       
-      // Verificar humedad suelo
+      // 2. Verificar Humedad Suelo (Ya lo tenías)
       if (reading.soilMoisture < (plant.soilMoistureMin || 30)) issues.push('Suelo Seco 🌵');
 
+      // --- 3. NUEVO: VERIFICAR ESTADO DEL TANQUE ---
+      // Verificamos si el Arduino mandó la señal de ALERTA o si el nivel es muy bajo
+      // Nota: A veces Arduino manda "estadoTanque", a veces "waterLevel", cubrimos ambos casos
+      const tanqueEstado = reading.estadoTanque || reading.waterLevel;
+      const nivelAgua = Number(reading.nivelAgua || 0);
+
+      if (tanqueEstado === 'ALERTA' || tanqueEstado === 'LOW' || nivelAgua < 10) {
+          issues.push('¡TANQUE DE AGUA VACÍO! 🚰');
+      }
+    
       return issues.length > 0 ? { plantId: reading.plantId, plantName: plant.commonName, issues } : null;
-    }).filter(Boolean); // Eliminar nulos
+    }).filter(Boolean);
 
     return {
       avgTemp,
