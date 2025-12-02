@@ -43,7 +43,7 @@ const Sensors = () => {
             }
         }
         // Quitamos 'selectedPlantId' de las dependencias para evitar el bucle
-    }, [plants, urlPlantId]); 
+    }, [plants, urlPlantId, selectedPlantId]); 
 
     if (plantsLoading) return <Loader />;
 
