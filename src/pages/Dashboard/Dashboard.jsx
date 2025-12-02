@@ -9,18 +9,21 @@ import Loader from '../../components/common/Loader/Loader';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const { plants, alerts, loading } = useGreenhouse();
-  const { avgTemp, avgHumidity, warnings } = useSensors();
+  const { plants, alerts: historyAlerts, loading } = useGreenhouse();
+  const { avgTemp, avgHumidity, warnings: realtimeWarnings } = useSensors();
   
-  // Activar actualizaciones en tiempo real
+  // Activar actualizaciones
   useRealTimeData();
 
   if (loading) return <Loader />;
 
+  // CÁLCULO TOTAL DE ALERTAS (Historial + Tiempo Real)
+  const totalAlerts = historyAlerts.length + realtimeWarnings.length;
+
   return (
     <div className="dashboard">
       
-      {/* Encabezado con Botón de Acción */}
+      {/* Header */}
       <header className="dashboard-header-actions" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
         <h1>🌱 Dashboard del Invernadero</h1>
         <Link to="/nueva-planta" className="btn-primary" style={{textDecoration: 'none'}}>
@@ -28,7 +31,7 @@ const Dashboard = () => {
         </Link>
       </header>
 
-      {/* Métricas clave */}
+      {/* Métricas */}
       <div className="metrics-grid">
         <Card className="metric-card">
           <div className="metric-icon">🌱</div>
@@ -48,24 +51,15 @@ const Dashboard = () => {
           <div className="metric-label">Humedad Promedio</div>
         </Card>
 
-        <Card className={`metric-card ${alerts.length > 0 ? 'alert-active' : ''}`}>
+        {/* AQUÍ ESTÁ EL ARREGLO DEL CONTADOR */}
+        <Card className={`metric-card ${totalAlerts > 0 ? 'alert-active' : ''}`}>
           <div className="metric-icon">⚠️</div>
-          <div className="metric-value">{alerts.length}</div>
+          <div className="metric-value">{totalAlerts}</div>
           <div className="metric-label">Alertas Activas</div>
         </Card>
       </div>
 
-      {/* Advertencias */}
-      {warnings.length > 0 && (
-        <div className="warnings-section">
-          <h3>⚠️ Atención Requerida</h3>
-          {warnings.map((warning, idx) => (
-            <div key={idx} className="warning-banner">
-              Planta {warning.plantId}: {warning.issues.join(', ')}
-            </div>
-          ))}
-        </div>
-      )}
+      {/* --- SECCIÓN DE ADVERTENCIAS ELIMINADA (Ya está en la página Alertas) --- */}
 
       {/* Grid de plantas */}
       <section className="plants-section">
