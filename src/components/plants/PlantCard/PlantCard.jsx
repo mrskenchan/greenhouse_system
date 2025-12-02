@@ -5,12 +5,18 @@ import { Plant } from '../../../models/Plant';
 import './PlantCard.css';
 
 const PlantCard = ({ plant }) => {
-  const { readings } = useGreenhouse();
-  const { deletePlant } = useGreenhouse();
+  const { readings, deletePlant } = useGreenhouse();
   const navigate = useNavigate();
+
+  // Crear una instancia del modelo Plant
   const plantModel = new Plant(plant);
   const reading = readings.find(r => r.plantId === plant.id);
   const currentPhase = plantModel.getCurrentPhase();
+
+  const handleViewDetails = () => {
+    // Navegamos a Sensores pasando el ID en la URL: /sensores?id=-Nd67...
+    navigate(`/sensores?id=${plant.id}`);
+  };
 
   return (
     <div className="plant-card">
@@ -66,7 +72,11 @@ const PlantCard = ({ plant }) => {
         </div>
       )}
 
-      <button className="btn-detail">Ver Detalles</button>
+      <button 
+        className="btn-detail"
+        onClick={handleViewDetails}
+        style={{gridColumn: '1 / -1', background: '#2c3e50'}}
+        >Ver Detalles</button>
     </div>
   );
 };
