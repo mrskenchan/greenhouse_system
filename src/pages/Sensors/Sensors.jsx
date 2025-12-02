@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // <--- 1. Agregado useEffect
+import { useSearchParams } from 'react-router-dom'; 
 import { useGreenhouse } from '../../hooks/useGreenhouse';
 import { useReadingsHistory } from '../../hooks/useReadingsHistory';
 import TemperatureChart from '../../components/sensors/TemperatureChart/TemperatureChart';
@@ -8,23 +9,48 @@ import './Sensors.css';
 
 const Sensors = () => {
     const { plants, loading: plantsLoading } = useGreenhouse();
-    // Estado para seleccionar qué planta ver (por defecto la primera si existe)
-    const [selectedPlantId, setSelectedPlantId] = useState(plants[0]?.id || null);
     
-    // Hook de historial conectado a la planta seleccionada
+    // Obtener parámetros de URL
+    const [searchParams] = useSearchParams();
+    const urlPlantId = searchParams.get('id');
+
+    // Estado inicial
+    const [selectedPlantId, setSelectedPlantId] = useState(urlPlantId || null);
+    
     const { history, loading: historyLoading } = useReadingsHistory(selectedPlantId);
 
-    // Efecto para seleccionar la primera planta automáticamente al cargar
-    React.useEffect(() => {
-        if (plants.length > 0 && !selectedPlantId) {
-            setSelectedPlantId(plants[0].id);
+    // 2. EFECTO CORREGIDO (Sin bucles infinitos)
+    useEffect(() => {
+        // Solo ejecutamos si ya cargaron las plantas
+        if (plants.length > 0) {
+            
+            // Caso A: La URL manda (Navegación desde "Ver Detalles")
+            if (urlPlantId) {
+                // Verificamos si la planta existe y si NO está seleccionada ya
+                const plantExists = plants.find(p => p.id === urlPlantId);
+                if (plantExists && selectedPlantId !== urlPlantId) {
+                    setTimeout(() => {
+                        setSelectedPlantId(urlPlantId);
+                    }, 0);
+                }
+            } 
+            // Caso B: Carga inicial sin URL (Dashboard general)
+            else if (!selectedPlantId) {
+                // Seleccionamos la primera planta disponible
+                setTimeout(() => {
+                        setSelectedPlantId(plants[0].id);
+                    }, 0);
+            }
         }
-    }, [plants, selectedPlantId]);
+        // Quitamos 'selectedPlantId' de las dependencias para evitar el bucle
+    }, [plants, urlPlantId]); 
 
     if (plantsLoading) return <Loader />;
 
-    // Buscar datos de la planta seleccionada para mostrar nombre, etc.
+    // Buscar datos de la planta seleccionada
     const selectedPlant = plants.find(p => p.id === selectedPlantId);
+    
+    // Obtener última lectura del historial para las tarjetas
     const latestReading = history.length > 0 ? history[history.length - 1] : null;
 
     return (
@@ -32,7 +58,6 @@ const Sensors = () => {
             <div className="sensors-header">
                 <h1>📊 Monitoreo Detallado</h1>
                 
-                {/* Selector de Planta */}
                 <div className="plant-selector">
                     <label>Seleccionar Planta:</label>
                     <select 
@@ -48,23 +73,21 @@ const Sensors = () => {
 
             {selectedPlantId && selectedPlant ? (
                 <div className="sensors-grid">
-                    {/* COLUMNA IZQUIERDA: GRÁFICOS */}
-                    
+                    {/* Gráficos */}
                     <div className="chart-section">
-                      <div className="chart-card">
-                        <h3>🌡️ Histórico de Temperatura</h3>
-                        {/* SOLUCIÓN: Usamos historyLoading para dar feedback visual */}
-                        {historyLoading ? (
-                            <div style={{padding: '2rem', textAlign: 'center', color: '#666'}}>
-                                Cargando historial...
-                            </div>
-                        ) : (
-                            <TemperatureChart data={history} />
-                        )}
-                      </div>
+                        <div className="chart-card">
+                            <h3>🌡️ Histórico de Temperatura</h3>
+                            {historyLoading ? (
+                                <div style={{padding: '2rem', textAlign: 'center', color: '#666'}}>
+                                    Cargando historial...
+                                </div>
+                            ) : (
+                                <TemperatureChart data={history} />
+                            )}
+                        </div>
                     </div>
 
-                    {/* COLUMNA DERECHA: ÚLTIMA LECTURA */}
+                    {/* Panel Lateral: Lectura Actual */}
                     <div className="readings-panel">
                         <h3>Lectura Actual</h3>
                         {latestReading ? (
@@ -84,16 +107,19 @@ const Sensors = () => {
                                     status={latestReading.soilMoisture < selectedPlant.soilMoistureMin ? 'critical' : 'normal'}
                                 />
                                 <div className="timestamp">
-                                    Actualizado: {new Date(latestReading.timestamp).toLocaleTimeString()}
+                                    Actualizado: {latestReading.timeLabel}
                                 </div>
                             </>
                         ) : (
-                            <p>Esperando datos del Arduino...</p>
+                            <div style={{padding: '1rem', textAlign: 'center', color: '#999'}}>
+                                <p>Esperando datos...</p>
+                                <small style={{display:'block', marginTop:'5px'}}>Verifica tu Arduino</small>
+                            </div>
                         )}
                     </div>
                 </div>
             ) : (
-                <p>No hay plantas registradas. Ve al Dashboard para agregar una.</p>
+                <p>No hay plantas registradas o seleccionadas.</p>
             )}
         </div>
     );
