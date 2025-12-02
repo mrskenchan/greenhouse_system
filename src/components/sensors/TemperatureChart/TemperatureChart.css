@@ -1,6 +1,17 @@
-.chart-container { 
-    padding: 1rem; 
-    background: white; 
-    border-radius: var(--border-radius-md); 
-    box-shadow: var(--shadow-sm); 
+.chart-container {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    height: 350px; /* Altura fija para estabilidad */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chart-container.empty {
+    align-items: center;
+    color: #aaa;
+    font-style: italic;
+    background: #f9f9f9;
 }

@@ -27,7 +27,9 @@ export const useReadingsHistory = (plantId, limit = 20) => {
         const formattedData = Object.keys(data).map(key => ({
           id: key,
           ...data[key]
-        })).sort((a, b) => a.timestamp - b.timestamp);
+        }))
+        .filter(item => item.timestamp && item.temperature !== undefined)
+        .sort((a, b) => a.timestamp - b.timestamp); // Ordenar por tiempo
         
         setHistory(formattedData);
       } else {
