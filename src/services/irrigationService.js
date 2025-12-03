@@ -1,9 +1,9 @@
-// src/services/irrigationService.js
-import { ref, set, push } from 'firebase/database';
+import { ref, set, push, remove } from 'firebase/database';
 import { database } from './firebase';
 
 const EVENTS_NODE = 'IRRIGATION_EVENTS';
 const COMMANDS_NODE = 'COMMANDS';
+const SCHEDULES_NODE = 'SCHEDULES';
 
 /**
  * Obtiene historial reciente (Simulado para dashboard)
@@ -41,3 +41,39 @@ export const start = async (plantId, type = 'manual') => {
         throw error;
     }
 };
+
+export const scheduleIrrigation = async (plantId, dateObj) => {
+    try {
+        // Convertimos la fecha Javascript (milisegundos) a Unix Timestamp (segundos)
+        // Esto es vital porque el Arduino trabaja en segundos.
+        const timestampSeconds = Math.floor(dateObj.getTime() / 1000);
+
+        console.log(`📅 Programando riego para ${plantId} a las ${timestampSeconds}`);
+
+        // Guardamos en el nodo específico de la planta
+        // Usamos 'nextTask' para sobrescribir la anterior (así solo hay 1 pendiente a la vez)
+        const scheduleRef = ref(database, `${SCHEDULES_NODE}/${plantId}`);
+        
+        await set(scheduleRef, {
+            triggerAt: timestampSeconds, // El número mágico para el Arduino
+            status: 'pending',           // Estado inicial
+            createdAt: Date.now(),
+            readableDate: dateObj.toLocaleString() // Solo para que tú lo leas fácil en Firebase
+        });
+
+        return true;
+    } catch (error) {
+        console.error("Error agendando riego:", error);
+        throw error;
+    }
+};
+
+/**
+ * CANCELAR RIEGO PROGRAMADO
+ */
+export const cancelSchedule = async (plantId) => {
+    const scheduleRef = ref(database, `${SCHEDULES_NODE}/${plantId}`);
+    await remove(scheduleRef);
+    return true;
+};
+   
