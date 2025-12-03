@@ -6,6 +6,7 @@ import { useRealTimeData } from '../../hooks/useRealTimeData';
 import PlantCard from '../../components/plants/PlantCard/PlantCard';
 import Card from '../../components/common/Card/Card';
 import Loader from '../../components/common/Loader/Loader';
+import IrrigationHistory from '../../components/plants/IrrigationHistory/IrrigationHistory';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -51,7 +52,6 @@ const Dashboard = () => {
           <div className="metric-label">Humedad Promedio</div>
         </Card>
 
-        {/* AQUÍ ESTÁ EL ARREGLO DEL CONTADOR */}
         <Card className={`metric-card ${totalAlerts > 0 ? 'alert-active' : ''}`}>
           <div className="metric-icon">⚠️</div>
           <div className="metric-value">{totalAlerts}</div>
@@ -59,17 +59,31 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* --- SECCIÓN DE ADVERTENCIAS ELIMINADA (Ya está en la página Alertas) --- */}
+      {/* --- 2. NUEVA SECCIÓN: HISTORIAL DE RIEGOS RECIENTES --- */}
+      <div className="dashboard-layout" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+        
+        {/* Columna Izquierda: Plantas */}
+        <section className="plants-section" style={{ marginTop: 0 }}>
+          <h2>Estado de las Plantas</h2>
+          {plants.length > 0 ? (
+            <div className="plants-grid">
+              {plants.map(plant => (
+                <PlantCard key={plant.id} plant={plant} />
+              ))}
+            </div>
+          ) : (
+            <p style={{ color: '#666', fontStyle: 'italic' }}>No hay plantas registradas. ¡Agrega una para comenzar!</p>
+          )}
+        </section>
 
-      {/* Grid de plantas */}
-      <section className="plants-section">
-        <h2>Estado de las Plantas</h2>
-        <div className="plants-grid">
-          {plants.map(plant => (
-            <PlantCard key={plant.id} plant={plant} />
-          ))}
-        </div>
-      </section>
+        {/* Columna Derecha: Historial de Riego */}
+        <section className="history-section">
+           {/* Al no pasarle 'plantId', muestra el historial GLOBAL */}
+           <IrrigationHistory /> 
+        </section>
+      </div>
+
+      
     </div>
   );
 };

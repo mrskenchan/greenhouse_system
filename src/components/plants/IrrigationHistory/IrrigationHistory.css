@@ -1,0 +1,21 @@
+.irrigation-history {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-top: 1.5rem;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.history-item.manual { border-left: 4px solid #3498db; }
+.history-item.programmed { border-left: 4px solid #9b59b6; }
+
+.history-type { font-weight: bold; display: block; }
+.history-date { font-size: 0.85rem; color: #777; }
+.history-status { color: #27ae60; font-size: 0.9rem; font-weight: 600; }

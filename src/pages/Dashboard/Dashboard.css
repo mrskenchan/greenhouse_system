@@ -57,3 +57,14 @@
   text-transform: uppercase;
   letter-spacing: 1px;
 }
+
+/* Hacer responsivo el layout nuevo */
+@media (max-width: 1024px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr !important; /* Pasa a una sola columna */
+  }
+  
+  .history-section {
+    order: 2; /* Pone el historial debajo de las plantas en móviles */
+  }
+}
