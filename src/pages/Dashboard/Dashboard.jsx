@@ -63,27 +63,29 @@ const Dashboard = () => {
       <div className="dashboard-layout" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
         
         {/* Columna Izquierda: Plantas */}
-        <section className="plants-section" style={{ marginTop: 0 }}>
-          <h2>Estado de las Plantas</h2>
-          {plants.length > 0 ? (
+        <section className="plants-section">
+        <div className="section-header">
+            <h2>🌿 Estado de las Plantas</h2>
+            <span className="badge-count">{plants.length}</span>
+        </div>
+        
+        {/* ENVOLTORIO NUEVO PARA EL SCROLL */}
+        <div className="plants-scroll-container"> 
             <div className="plants-grid">
-              {plants.map(plant => (
-                <PlantCard key={plant.id} plant={plant} />
-              ))}
+                {plants.map(plant => (
+                    <PlantCard key={plant.id} plant={plant} />
+                ))}
             </div>
-          ) : (
-            <p style={{ color: '#666', fontStyle: 'italic' }}>No hay plantas registradas. ¡Agrega una para comenzar!</p>
-          )}
-        </section>
+        </div>
+      </section>
 
         {/* Columna Derecha: Historial de Riego */}
         <section className="history-section">
            {/* Al no pasarle 'plantId', muestra el historial GLOBAL */}
            <IrrigationHistory /> 
         </section>
+        
       </div>
-
-      
     </div>
   );
 };
