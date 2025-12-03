@@ -1,21 +1,114 @@
-.irrigation-history {
+.irrigation-history-card {
     background: white;
     padding: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    margin-top: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    height: 100%; /* Para que llene el espacio si está en grid */
+    border: 1px solid rgba(0,0,0,0.02);
 }
 
-.history-item {
+.history-header {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #f5f5f5;
+    padding-bottom: 10px;
 }
 
-.history-item.manual { border-left: 4px solid #3498db; }
-.history-item.programmed { border-left: 4px solid #9b59b6; }
+.history-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
 
-.history-type { font-weight: bold; display: block; }
-.history-date { font-size: 0.85rem; color: #777; }
-.history-status { color: #27ae60; font-size: 0.9rem; font-weight: 600; }
+.badge-count {
+    background: #e8f5e9;
+    color: #27ae60;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 300px; /* Scroll si hay muchos */
+    overflow-y: auto;
+}
+
+/* Ítem Individual (Tarjeta pequeña) */
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.2s;
+    border-left: 4px solid transparent;
+}
+
+.history-item:hover {
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transform: translateX(2px);
+}
+
+/* Diferenciación visual por tipo */
+.history-item.manual { border-left-color: #3498db; } /* Azul para manual */
+.history-item.auto { border-left-color: #9b59b6; }   /* Morado para auto */
+
+.history-icon {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    background: white;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.history-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #34495e;
+}
+
+.history-time {
+    font-size: 0.8rem;
+    color: #95a5a6;
+    margin-top: 2px;
+}
+
+.history-status {
+    font-size: 0.75rem;
+    color: #27ae60;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #27ae60;
+    border-radius: 50%;
+}
+
+.empty-state-history {
+    text-align: center;
+    padding: 2rem;
+    color: #bdc3c7;
+}
