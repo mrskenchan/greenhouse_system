@@ -28,13 +28,16 @@ const IrrigationHistory = ({ plantId }) => {
   }, [plantId]);
 
   // Función auxiliar para formatear fecha segura
-  const formatDate = (timestamp) => {
-    if (!timestamp) return '-';
+  const formatDate = (ts) => {
+    // 1. Intentamos leer 'timestamp', si no existe, probamos 'startTime'
+    const validTime = ts || 0; 
+    
+    if (!validTime) return 'Recién'; // Si sigue vacío
+
     try {
-        // Formato: "03 dic, 14:30"
-        return format(new Date(timestamp), "d MMM, HH:mm", { locale: es });
+        return format(new Date(validTime), "d MMM, HH:mm", { locale: es });
     } catch {
-        return 'Fecha inválida';
+        return '-';
     }
   };
 
@@ -65,7 +68,7 @@ const IrrigationHistory = ({ plantId }) => {
                         {event.type === 'manual' ? 'Riego Manual' : 'Automático'}
                     </span>
                     <span className="history-time">
-                        {formatDate(event.timestamp)}
+                        {formatDate(event.timestamp || event.startTime)}
                     </span>
                 </div>
 
